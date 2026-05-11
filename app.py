@@ -70,20 +70,24 @@ def home():
 
 @app.post("/predict")
 def predict_insurance(insurance : Insurance_Input):
+    try:
+        input_df = pd.DataFrame([{
+        "age":insurance.Age, 
+        "employment_type":insurance.Employment_type,
+        "graduateornot":insurance.graduated, 
+        "chronicdiseases":insurance.cronic_disease,
+        "frequentflyer":insurance.frequent_flyer, 
+        "evertravelledabroad":insurance.ever_travelled_abroad,
+        "income":insurance.income, 
+        "family":insurance.family
+        }]
+        )
 
-    input_df = pd.DataFrame([{
-       "age":insurance.Age, 
-       "employment_type":insurance.Employment_type,
-       "graduateornot":insurance.graduated, 
-       "chronicdiseases":insurance.cronic_disease,
-       "frequentflyer":insurance.frequent_flyer, 
-       "evertravelledabroad":insurance.ever_travelled_abroad,
-       "income":insurance.income, 
-       "family":insurance.family
-    }]
-    )
+        result=int(model.predict(input_df)[0])
 
-    result=int(model.predict(input_df)[0])
-
-    return JSONResponse(status_code=200,content={"predicted":result})
+        return JSONResponse(status_code=200,content={"predicted":result})
+    except Exception as e:
+        return {
+            "error":str(e)
+        }
 
