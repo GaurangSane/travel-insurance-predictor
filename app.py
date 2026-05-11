@@ -57,7 +57,15 @@ class Insurance_Input(BaseModel):
         if self.family_members<6:
             return "medium"
         else:
-            return "big"    
+            return "big"  
+
+
+@app.get("/")
+def home():
+
+    return {
+        "message": "Travel Insurance API Running"
+    }          
         
 
 @app.post("/predict")
