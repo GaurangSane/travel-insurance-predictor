@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 MODEL_PATH = os.path.join(
     BASE_DIR,
-    "Travel_Insurance_Model.pkl"
+    "travel_insurance_model.pkl"
 )
 
 print("BASE DIR:", BASE_DIR)
@@ -100,27 +100,27 @@ def predict_insurance(insurance : Insurance_Input):
 
         input_df = pd.DataFrame([{
 
-            "Age": insurance.Age,
+            "age": insurance.Age,
 
-            "Employment_type":
+            "employment_type":
                 insurance.Employment_type,
 
-            "graduated":
+            "graduateornot":
                 insurance.graduated,
 
-            "cronic_disease":
+            "chronicdiseases":
                 insurance.cronic_disease,
 
-            "frequent_flyer":
+            "frequentflyer":
                 insurance.frequent_flyer,
 
-            "ever_travelled_abroad":
+            "evertravelledabroad":
                 insurance.ever_travelled_abroad,
 
-            "annual_income":
+            "income":
                 insurance.annual_income,
 
-            "family_members":
+            "family":
                 insurance.family_members
         }])
         if model is None:
