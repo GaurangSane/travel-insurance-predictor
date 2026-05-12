@@ -506,19 +506,19 @@
           }
         );
 
+        const responseText = await response.text();
+
         let result;
 
         try {
 
-            result = await response.json();
+            result = JSON.parse(responseText);
 
         }
 
         catch {
 
-            const textError = await response.text();
-
-            throw new Error(textError);
+            throw new Error(responseText);
         }
 
         console.log("FULL BACKEND RESPONSE:", result);
