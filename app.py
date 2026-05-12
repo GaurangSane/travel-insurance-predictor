@@ -4,6 +4,7 @@ from typing import Annotated,Literal
 from pydantic import BaseModel, Field, computed_field
 import joblib
 import pandas as pd
+import traceback
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -86,21 +87,49 @@ def home():
 @app.post("/predict")
 def predict_insurance(insurance : Insurance_Input):
     try:
-        input_df = pd.DataFrame([{
-        "age":insurance.Age, 
-        "employment_type":insurance.Employment_type,
-        "graduateornot":insurance.graduated, 
-        "chronicdiseases":insurance.cronic_disease,
-        "frequentflyer":insurance.frequent_flyer, 
-        "evertravelledabroad":insurance.ever_travelled_abroad,
-        "income":insurance.income, 
-        "family":insurance.family
-        }]
-        )
 
-        loaded_model = load_model()
-        result = int(loaded_model.predict(input_df)[0])
-        return JSONResponse(status_code=200, content={"predicted": result})
+        input_df = pd.DataFrame([{
+
+            "Age": insurance.Age,
+
+            "Employment_type":
+                insurance.Employment_type,
+
+            "graduated":
+                insurance.graduated,
+
+            "cronic_disease":
+                insurance.cronic_disease,
+
+            "frequent_flyer":
+                insurance.frequent_flyer,
+
+            "ever_travelled_abroad":
+                insurance.ever_travelled_abroad,
+
+            "annual_income":
+                insurance.annual_income,
+
+            "family_members":
+                insurance.family_members
+        }])
+
+        prediction = model.predict(input_df)[0]
+
+        return {
+            "predicted": int(prediction)
+        }
+
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+
+        error_trace = traceback.format_exc()
+
+        return JSONResponse(
+            status_code=500,
+
+            content={
+                "error": str(e),
+                "traceback": error_trace
+            }
+        )
 
