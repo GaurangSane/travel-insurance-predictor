@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from typing import Annotated,Literal
 from pydantic import BaseModel, Field, computed_field
-import joblib
 import pandas as pd
 import traceback
 
@@ -26,19 +25,22 @@ app.add_middleware(
 model = None
 
 
-def load_model():
-    global model
-    if model is not None:
-        return model
+import os
+import joblib
 
-    try:
-        model = joblib.load("Travel_Insurance_Model.pkl")
-        return model
-    except Exception as exc:
-        raise RuntimeError(
-            "Failed to load Travel_Insurance_Model.pkl. "
-            "Check that the model file matches the installed scikit-learn/pandas versions."
-        ) from exc
+BASE_DIR = os.path.dirname(__file__)
+print(os.listdir(BASE_DIR))
+
+MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "Travel_Insurance_Model.pkl"
+)
+
+print("MODEL PATH:", MODEL_PATH)
+
+model = joblib.load(MODEL_PATH)
+
+print("MODEL LOADED SUCCESSFULLY")
 
 
 class Insurance_Input(BaseModel):
