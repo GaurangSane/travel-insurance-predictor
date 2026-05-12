@@ -22,7 +22,22 @@ app.add_middleware(
 )
 
 
-model = joblib.load("Travel_Insurance_Model.pkl")
+model = None
+
+
+def load_model():
+    global model
+    if model is not None:
+        return model
+
+    try:
+        model = joblib.load("Travel_Insurance_Model.pkl")
+        return model
+    except Exception as exc:
+        raise RuntimeError(
+            "Failed to load Travel_Insurance_Model.pkl. "
+            "Check that the model file matches the installed scikit-learn/pandas versions."
+        ) from exc
 
 
 class Insurance_Input(BaseModel):
@@ -83,11 +98,9 @@ def predict_insurance(insurance : Insurance_Input):
         }]
         )
 
-        result=int(model.predict(input_df)[0])
-
-        return JSONResponse(status_code=200,content={"predicted":result})
+        loaded_model = load_model()
+        result = int(loaded_model.predict(input_df)[0])
+        return JSONResponse(status_code=200, content={"predicted": result})
     except Exception as e:
-        return {
-            "error":str(e)
-        }
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
