@@ -36,10 +36,19 @@ print("BASE DIR:", BASE_DIR)
 print("FILES:", os.listdir(BASE_DIR))
 print("MODEL PATH:", MODEL_PATH)
 
-# LOAD MODEL
-model = joblib.load(MODEL_PATH)
+try:
 
-print("MODEL LOADED SUCCESSFULLY")
+    model = joblib.load(MODEL_PATH)
+
+    print("MODEL LOADED SUCCESSFULLY")
+
+except Exception as e:
+
+    print("MODEL LOAD FAILED")
+
+    print(str(e))
+
+    model = None
 
 
 class Insurance_Input(BaseModel):
@@ -120,6 +129,14 @@ def predict_insurance(insurance : Insurance_Input):
                 status_code=500,
                 content={
                     "error": "Model failed to load"
+                }
+            )
+        if model is None:
+
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "error": "Model failed to load on server"
                 }
             )
 
