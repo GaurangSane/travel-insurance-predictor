@@ -508,10 +508,31 @@
 
         const result = await response.json();
 
+        console.log("FULL BACKEND RESPONSE:", result);
+
         loading.style.display = "none";
 
         resultDiv.style.display = "block";
 
+        // BACKEND ERROR
+        if (!response.ok) {
+
+          resultDiv.className = "result danger";
+
+          resultDiv.innerHTML = `
+            ⚠️ Backend Error:<br><br>
+            <pre style="
+              white-space: pre-wrap;
+              text-align: left;
+              font-size: 12px;
+              overflow-x: auto;
+            ">${JSON.stringify(result, null, 2)}</pre>
+          `;
+
+          return;
+        }
+
+        // SUCCESS RESPONSE
         if (result.predicted === 1) {
 
           resultDiv.className = "result success";
@@ -542,15 +563,17 @@
         resultDiv.className = "result danger";
 
         resultDiv.innerHTML =
-          "⚠️ Error connecting to FastAPI backend";
+          `
+          ⚠️ Frontend Error<br><br>
+          ${error}
+          `;
 
         console.log(error);
       }
 
     });
 
-  </script>
-
+</script>
 </body>
 
 </html>
