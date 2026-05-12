@@ -22,22 +22,21 @@ app.add_middleware(
 )
 
 
-model = None
-
-
 import os
 import joblib
 
 BASE_DIR = os.path.dirname(__file__)
-print(os.listdir(BASE_DIR))
 
 MODEL_PATH = os.path.join(
     BASE_DIR,
     "Travel_Insurance_Model.pkl"
 )
 
+print("BASE DIR:", BASE_DIR)
+print("FILES:", os.listdir(BASE_DIR))
 print("MODEL PATH:", MODEL_PATH)
 
+# LOAD MODEL
 model = joblib.load(MODEL_PATH)
 
 print("MODEL LOADED SUCCESSFULLY")
@@ -115,6 +114,14 @@ def predict_insurance(insurance : Insurance_Input):
             "family_members":
                 insurance.family_members
         }])
+        if model is None:
+
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "error": "Model failed to load"
+                }
+            )
 
         prediction = model.predict(input_df)[0]
 
