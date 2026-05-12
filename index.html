@@ -506,7 +506,20 @@
           }
         );
 
-        const result = await response.json();
+        let result;
+
+        try {
+
+            result = await response.json();
+
+        }
+
+        catch {
+
+            const textError = await response.text();
+
+            throw new Error(textError);
+        }
 
         console.log("FULL BACKEND RESPONSE:", result);
 
